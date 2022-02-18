@@ -7,7 +7,6 @@ import telegram from "./media/telegram.png";
 import cac from "./media/cac.png";
 import btbg from "./media/button.png";
 import desert from "./media/desert.png";
-// import bg from "./media/bg1.jfif";
 import Web3 from "web3";
 import contractjson from "./details/contract.json";
 
@@ -20,10 +19,20 @@ const abi = JSON.parse(loadedData);
 
 export default function Main() {
   const inputMint = useRef();
-  const [textInput1, setTextInput1] = useState(0);
-  const [mintCount, setMintCount] = useState(0);
+  const [mintCount, setMintCount] = useState(1);
+  const [selected, setSelected] = useState(null);
   const [totalCount, setTotalCount] = useState(7800);
-  
+  useEffect(async() => {
+    let provider = window.ethereum;
+    const web3 = new Web3(provider);
+    let accounts = await web3.eth.getAccounts();
+    console.log(accounts);
+    if (accounts.length > 0) {
+      selectedAccount = accounts[0];
+      setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
+    }
+  }, []);
+
   const changeValue = (newValue) => {
     let value = newValue != 21 ? newValue : 20;
     setMintCount(value);
@@ -70,17 +79,18 @@ export default function Main() {
         .request({ method: "eth_requestAccounts" })
         .then((accounts) => {
           selectedAccount = accounts[0];
+          setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
           console.log("Selected Account is " + selectedAccount);
         })
         .catch((err) => {
           console.log(err);
         });
 
-      window.ethereum.on("chainChanged", function () {
+      provider.on("chainChanged", function () {
         window.location.reload();
       });
 
-      window.ethereum.on("accountsChanged", function (accounts) {
+      provider.on("accountsChanged", function (accounts) {
         if (accounts.length > 0) {
           selectedAccount = accounts[0];
           console.log("Selected Account change is" + selectedAccount);
@@ -89,15 +99,15 @@ export default function Main() {
         }
       });
 
-      window.ethereum.on("message", function (message) {
+      provider.on("message", function (message) {
         console.log(message);
       });
 
-      window.ethereum.on("connect", function (info) {
+      provider.on("connect", function (info) {
         console.log("Connected to network " + info);
       });
 
-      window.ethereum.on("disconnect", function (error) {
+      provider.on("disconnect", function (error) {
         console.log("Disconnected from network " + error);
       });
     } else {
@@ -113,13 +123,12 @@ export default function Main() {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
-      const cost = 200000000000000000 * textInput1;
+      const cost = 200000000000000000 * mintCount;
       alert(cost);
       contract.methods
-        .safeMint(textInput1)
+        .safeMint(mintCount)
         .send({ from: accounts[0], value: cost });
-      setTextInput1(0);
-      inputMint.current.style.setProperty("--thumb-rotate", `${0 * 720}deg`);
+      setMintCount(1);
     }
   }
   async function onWhitelistMintClick() {
@@ -130,13 +139,12 @@ export default function Main() {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
-      const cost = 100000000000000000 * textInput1;
+      const cost = 100000000000000000 * mintCount;
       alert(cost);
       contract.methods
-        .mintForWhiteListed(textInput1)
+        .mintForWhiteListed(mintCount)
         .send({ from: accounts[0], value: cost });
-      setTextInput1(0);
-      inputMint.current.style.setProperty("--thumb-rotate", `${0 * 720}deg`);
+      setMintCount(1);
     }
   }
   return (
@@ -157,7 +165,9 @@ export default function Main() {
         <span>mirage</span>
         </div>
         <div className="connectWallet">
-          <button className="fontStyle">Connect to Wallet</button>
+          {selected !== null ? <button className="fontStyle">Connected {selected}</button> : 
+            <button className="fontStyle" onClick={onConnectClick}>Connect to Wallet</button>
+          }
         </div>
       </div>
       <div className="content">
@@ -199,8 +209,8 @@ export default function Main() {
             <div className="circle"></div>
           </div>
           <div className="mintButtons">
-            <button className="wlButton">WHITELIST MINT</button>
-            <button className="plButton">PUBLIC MINT</button>
+            <button className="wlButton" onClick={onWhitelistMintClick}>WHITELIST MINT</button>
+            <button className="plButton" onClick={onPublicMintClick}>PUBLIC MINT</button>
           </div>
           <img className="desert" src={desert} />
         </div>
