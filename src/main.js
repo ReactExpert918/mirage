@@ -31,7 +31,7 @@ export default function Main() {
       selectedAccount = accounts[0];
       setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
     }
-  }, []);
+  });
 
   const changeValue = (newValue) => {
     let value = newValue != 21 ? newValue : 20;
@@ -95,6 +95,7 @@ export default function Main() {
           selectedAccount = accounts[0];
           console.log("Selected Account change is" + selectedAccount);
         } else {
+           window.location.reload();
           console.error("No account is found");
         }
       });
