@@ -12,7 +12,7 @@ import contractjson from "./details/contract.json";
 
 let contract = null;
 let selectedAccount = null;
-const ADDRESS = "0x0e1Bc1433c5F546F4c7c489d0e9764a2aeBa16bb";
+const ADDRESS = "0xAb444C2cB2Ca6635f317b37440A7C0DA056B6971";
 
 const loadedData = JSON.stringify(contractjson);
 const abi = JSON.parse(loadedData);
@@ -22,11 +22,29 @@ export default function Main() {
   const [mintCount, setMintCount] = useState(1);
   const [selected, setSelected] = useState(null);
   const [totalCount, setTotalCount] = useState(7800);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      let provider = window.ethereum;
+      if (typeof provider !== "undefined") {
+        const web3 = new Web3(provider);
+        contract = new web3.eth.Contract(abi, ADDRESS);
+        contract.methods
+          .mintedAlready()
+          .call()
+          .then((cts) => {
+            console.log(cts);
+            setMintCount(cts);
+          });
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(async() => {
     let provider = window.ethereum;
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
-    console.log(accounts);
     if (accounts.length > 0) {
       selectedAccount = accounts[0];
       setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
