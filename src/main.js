@@ -107,7 +107,7 @@ export default function Main() {
   async function onConnectClick() {
     let provider = window.ethereum;
     const chainId = await provider.request({ method: 'eth_chainId' });
-    if(chainId == 0xa516) {
+    if(chainId === "0xa516") {
       if (typeof provider !== "undefined") {
         provider
           .request({ method: "eth_requestAccounts" })
