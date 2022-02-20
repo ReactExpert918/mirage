@@ -193,14 +193,14 @@ export default function Main() {
     <div className="container">
       <div className="header">
         <div className="socialLink">
-          <a href="http://t.me/miragemkt" target="_blank">
-            <img className="socialIcon" src={telegram} />
+          <a href="http://t.me/miragemkt" target="_blank" rel="noreferrer">
+            <img alt="img"  className="socialIcon" src={telegram} />
           </a>
-          <a href="https://discord.gg/bUBycbtuCh" target="_blank">
-            <img className="discord" src={discord } />
+          <a href="https://discord.gg/bUBycbtuCh" target="_blank" rel="noreferrer">
+            <img alt="img" className="discord" src={discord } />
           </a>
-          <a href="https://twitter.com/MirageMarket" target="_blank">
-            <img className="socialIcon" src={twitter} />
+          <a href="https://twitter.com/MirageMarket" target="_blank" rel="noreferrer">
+            <img alt="img" className="socialIcon" src={twitter} />
           </a>
         </div>
         <div className="logo">
@@ -216,7 +216,7 @@ export default function Main() {
         <div className="boxModal">
           <div className="boxModalTitle">
             <p className="cactusClaim">CLAIM YOUR</p>
-            <img src={cac} className="cactusTitle" />
+            <img alt="img" src={cac} className="cactusTitle" />
           </div>
           <div className="mintCount">
             <span 
@@ -254,14 +254,14 @@ export default function Main() {
             <button className="wlButton" onClick={onWhitelistMintClick}>WHITELIST MINT</button>
             <button className="plButton" onClick={onPublicMintClick}>PUBLIC MINT</button>
           </div>
-          <img className="desert" src={desert} />
+          <img alt="img" className="desert" src={desert} />
         </div>
         <div>
           <div className="sun"></div>
-          <img className = "cactus" src = "https://www.freeiconspng.com/uploads/cactus-transparent-clipart-png-18.png" />
+          <img alt="img" className = "cactus" src = "https://www.freeiconspng.com/uploads/cactus-transparent-clipart-png-18.png" />
           <div className = "sand first"><div className = "sand-inner"></div></div>
           <div className = "sand"><div className = "sand-inner"></div></div>
-          <img className="bush" src="https://lh5.ggpht.com/SmI3FDZzhzV2uj9Of1MlbcdW5phOie9bzQ5TZ-YxfstqVwoeoxOku67F2n4kvdsX9U_y9Nb8D4JLcW1QJI_9EpM=s400" />
+          <img alt="img" className="bush" src="https://lh5.ggpht.com/SmI3FDZzhzV2uj9Of1MlbcdW5phOie9bzQ5TZ-YxfstqVwoeoxOku67F2n4kvdsX9U_y9Nb8D4JLcW1QJI_9EpM=s400" />
         </div>
       </div>      
     </div>
