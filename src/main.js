@@ -1,4 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import "./main.css";
 import discord from "./media/discord.png";
 import twitter from "./media/twitter.png";
@@ -20,7 +22,7 @@ export default function Main() {
   const [mintCount, setMintCount] = useState(0);
   const [textInput1, setTextInput1] = useState(1);
   const [selected, setSelected] = useState(null);
-  // const [totalCount, setTotalCount] = useState(7800);
+  const [network, setNetwork] = useState(true);
   const totalCount = 7800;
 
   useEffect(() => {
@@ -41,10 +43,20 @@ export default function Main() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
+  useEffect(async() => {
     async function checkNetwork() {
       let provider = window.ethereum;
       const web3 = new Web3(provider);
+      const chainId = await provider.request({ method: 'eth_chainId' });
+      if(chainId === "0xa516") {
+        setNetwork(true);
+      }
+      else {
+        setNetwork(false);
+      }
+      provider.on("chainChanged", function () {
+        window.location.reload();
+      });
       let accounts = await web3.eth.getAccounts();
       if (accounts.length > 0) {
         selectedAccount = accounts[0];
@@ -63,7 +75,7 @@ export default function Main() {
       }
     }
     checkNetwork();
-  }, []);
+  }, [network]);
 
   const changeValue = (newValue) => {
     let value = newValue !== 21 ? newValue : 20;
@@ -101,57 +113,52 @@ export default function Main() {
     } else {
       changeValue(val);
     }    
-    // changeMintValue();
   }
 
   async function onConnectClick() {
     let provider = window.ethereum;
-    const chainId = await provider.request({ method: 'eth_chainId' });
-    if(chainId === "0xa516") {
-      if (typeof provider !== "undefined") {
-        provider
-          .request({ method: "eth_requestAccounts" })
-          .then((accounts) => {
-            selectedAccount = accounts[0];
-            setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
-            console.log("Selected Account is " + selectedAccount);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-
-        provider.on("chainChanged", function () {
-          window.location.reload();
+    if (typeof provider !== "undefined") {
+      provider
+        .request({ method: "eth_requestAccounts" })
+        .then((accounts) => {
+          selectedAccount = accounts[0];
+          setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
+          console.log("Selected Account is " + selectedAccount);
+        })
+        .catch((err) => {
+          console.log(err);
         });
 
-        provider.on("accountsChanged", function (accounts) {
-          if (accounts.length > 0) {
-            selectedAccount = accounts[0];
-            console.log("Selected Account change is" + selectedAccount);
-          } else {
-             window.location.reload();
-            console.error("No account is found");
-          }
-        });
+      provider.on("chainChanged", function () {
+        window.location.reload();
+      });
 
-        provider.on("message", function (message) {
-          console.log(message);
-        });
+      provider.on("accountsChanged", function (accounts) {
+        if (accounts.length > 0) {
+          selectedAccount = accounts[0];
+          console.log("Selected Account change is" + selectedAccount);
+        } else {
+           window.location.reload();
+          console.error("No account is found");
+        }
+      });
 
-        provider.on("connect", function (info) {
-          console.log("Connected to network " + info);
-        });
+      provider.on("message", function (message) {
+        console.log(message);
+      });
 
-        provider.on("disconnect", function (error) {
-          console.log("Disconnected from network " + error);
-          window.location.reload();
-        });
-      } else {
-        alert("Please install metamask");
-      }
+      provider.on("connect", function (info) {
+        console.log("Connected to network " + info);
+      });
+
+      provider.on("disconnect", function (error) {
+        console.log("Disconnected from network " + error);
+        window.location.reload();
+      });
+      
     }
     else {
-      alert("Please change your chain account to Oasis");
+      NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
     }
     // console.log(chainId);
     
@@ -263,7 +270,16 @@ export default function Main() {
           <div className = "sand"><div className = "sand-inner"></div></div>
           <img alt="img" className="bush" src="https://lh5.ggpht.com/SmI3FDZzhzV2uj9Of1MlbcdW5phOie9bzQ5TZ-YxfstqVwoeoxOku67F2n4kvdsX9U_y9Nb8D4JLcW1QJI_9EpM=s400" />
         </div>
-      </div>      
+      </div>   
+      <NotificationContainer/>
+      {
+        network === false ? 
+        (<div className="loading">
+          <div className="loader simple-circle"></div>
+          <h1>Wrong Network</h1>
+          <h1>Please change your network to Oasis</h1>
+        </div>) : ""
+      }
     </div>
   );
 }
