@@ -1,11 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./main.css";
-import logo from "./media/mirage1.png";
 import discord from "./media/discord.png";
 import twitter from "./media/twitter.png";
 import telegram from "./media/telegram.png";
 import cac from "./media/cac.png";
-import btbg from "./media/button.png";
 import desert from "./media/desert.png";
 import Web3 from "web3";
 import contractjson from "./details/contract.json";
@@ -22,7 +20,8 @@ export default function Main() {
   const [mintCount, setMintCount] = useState(0);
   const [textInput1, setTextInput1] = useState(1);
   const [selected, setSelected] = useState(null);
-  const [totalCount, setTotalCount] = useState(7800);
+  // const [totalCount, setTotalCount] = useState(7800);
+  const totalCount = 7800;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,29 +41,32 @@ export default function Main() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(async() => {
-    let provider = window.ethereum;
-    const web3 = new Web3(provider);
-    let accounts = await web3.eth.getAccounts();
-    if (accounts.length > 0) {
-      selectedAccount = accounts[0];
-      setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
-    }
-    if (typeof provider !== "undefined") {
+  useEffect(() => {
+    async function checkNetwork() {
+      let provider = window.ethereum;
       const web3 = new Web3(provider);
-      contract = new web3.eth.Contract(abi, ADDRESS);
-      contract.methods
-        .mintedAlready()
-        .call()
-        .then((cts) => {
-          console.log(cts);
-          setMintCount(cts);
-        });
+      let accounts = await web3.eth.getAccounts();
+      if (accounts.length > 0) {
+        selectedAccount = accounts[0];
+        setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
       }
-  });
+      if (typeof provider !== "undefined") {
+        const web3 = new Web3(provider);
+        contract = new web3.eth.Contract(abi, ADDRESS);
+        contract.methods
+          .mintedAlready()
+          .call()
+          .then((cts) => {
+            console.log(cts);
+            setMintCount(cts);
+          });
+      }
+    }
+    checkNetwork();
+  }, []);
 
   const changeValue = (newValue) => {
-    let value = newValue != 21 ? newValue : 20;
+    let value = newValue !== 21 ? newValue : 20;
     setTextInput1(value);
   }
 
@@ -105,7 +107,7 @@ export default function Main() {
   async function onConnectClick() {
     let provider = window.ethereum;
     const chainId = await provider.request({ method: 'eth_chainId' });
-    if(chainId == 0xa516) {
+    if(chainId === 0xa516) {
       if (typeof provider !== "undefined") {
         provider
           .request({ method: "eth_requestAccounts" })
@@ -151,15 +153,13 @@ export default function Main() {
     else {
       alert("Please change your chain account to Oasis");
     }
-    // console.log(chainId);
-    
   }
 
   async function onPublicMintClick() {
     let provider = window.ethereum;
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
-    if (accounts[0] == null) {
+    if (accounts[0] === null) {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
@@ -175,7 +175,7 @@ export default function Main() {
     let provider = window.ethereum;
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
-    if (accounts[0] == null) {
+    if (accounts[0] === null) {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
@@ -191,14 +191,14 @@ export default function Main() {
     <div className="container">
       <div className="header">
         <div className="socialLink">
-          <a href="http://t.me/miragemkt" target="_blank">
-            <img className="socialIcon" src={telegram} />
+          <a href="http://t.me/miragemkt" target="_blank" rel="noreferrer">
+            <img className="socialIcon" src={telegram} alt="Telegram" />
           </a>
-          <a href="https://discord.gg/bUBycbtuCh" target="_blank">
-            <img className="discord" src={discord } />
+          <a href="https://discord.gg/bUBycbtuCh" target="_blank" rel="noreferrer">
+            <img className="discord" src={discord } alt="Discord" />
           </a>
-          <a href="https://twitter.com/MirageMarket" target="_blank">
-            <img className="socialIcon" src={twitter} />
+          <a href="https://twitter.com/MirageMarket" target="_blank" rel="noreferrer">
+            <img className="socialIcon" src={twitter} alt="Twitter" />
           </a>
         </div>
         <div className="logo">
@@ -214,7 +214,7 @@ export default function Main() {
         <div className="boxModal">
           <div className="boxModalTitle">
             <p className="cactusClaim">CLAIM YOUR</p>
-            <img src={cac} className="cactusTitle" />
+            <img src={cac} className="cactusTitle" alt="CactusTitle" />
           </div>
           <div className="mintCount">
             <span 
@@ -252,14 +252,14 @@ export default function Main() {
             <button className="wlButton" onClick={onWhitelistMintClick}>WHITELIST MINT</button>
             <button className="plButton" onClick={onPublicMintClick}>PUBLIC MINT</button>
           </div>
-          <img className="desert" src={desert} />
+          <img className="desert" src={desert} alt="Desert" />
         </div>
         <div>
           <div className="sun"></div>
-          <img className = "cactus" src = "https://www.freeiconspng.com/uploads/cactus-transparent-clipart-png-18.png" />
+          <img className = "cactus" alt="Cactua" src = "https://www.freeiconspng.com/uploads/cactus-transparent-clipart-png-18.png" />
           <div className = "sand first"><div className = "sand-inner"></div></div>
           <div className = "sand"><div className = "sand-inner"></div></div>
-          <img className="bush" src="https://lh5.ggpht.com/SmI3FDZzhzV2uj9Of1MlbcdW5phOie9bzQ5TZ-YxfstqVwoeoxOku67F2n4kvdsX9U_y9Nb8D4JLcW1QJI_9EpM=s400" />
+          <img className="bush" alt="Bush" src="https://lh5.ggpht.com/SmI3FDZzhzV2uj9Of1MlbcdW5phOie9bzQ5TZ-YxfstqVwoeoxOku67F2n4kvdsX9U_y9Nb8D4JLcW1QJI_9EpM=s400" />
         </div>
       </div>      
     </div>
