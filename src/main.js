@@ -43,7 +43,7 @@ export default function Main() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(async() => {
+  useEffect(() => {
     async function checkNetwork() {
       let provider = window.ethereum;
       const web3 = new Web3(provider);
