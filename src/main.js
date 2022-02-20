@@ -19,7 +19,8 @@ const abi = JSON.parse(loadedData);
 
 export default function Main() {
   const inputMint = useRef();
-  const [mintCount, setMintCount] = useState(1);
+  const [mintCount, setMintCount] = useState(0);
+  const [textInput1, setTextInput1] = useState(1);
   const [selected, setSelected] = useState(null);
   const [totalCount, setTotalCount] = useState(7800);
 
@@ -49,11 +50,22 @@ export default function Main() {
       selectedAccount = accounts[0];
       setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
     }
+    if (typeof provider !== "undefined") {
+      const web3 = new Web3(provider);
+      contract = new web3.eth.Contract(abi, ADDRESS);
+      contract.methods
+        .mintedAlready()
+        .call()
+        .then((cts) => {
+          console.log(cts);
+          setMintCount(cts);
+        });
+      }
   });
 
   const changeValue = (newValue) => {
     let value = newValue != 21 ? newValue : 20;
-    setMintCount(value);
+    setTextInput1(value);
   }
 
   const setMintValue = (val, field) => {
@@ -92,46 +104,55 @@ export default function Main() {
 
   async function onConnectClick() {
     let provider = window.ethereum;
-    if (typeof provider !== "undefined") {
-      provider
-        .request({ method: "eth_requestAccounts" })
-        .then((accounts) => {
-          selectedAccount = accounts[0];
-          setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
-          console.log("Selected Account is " + selectedAccount);
-        })
-        .catch((err) => {
-          console.log(err);
+    const chainId = await provider.request({ method: 'eth_chainId' });
+    if(chainId == 0xa516) {
+      if (typeof provider !== "undefined") {
+        provider
+          .request({ method: "eth_requestAccounts" })
+          .then((accounts) => {
+            selectedAccount = accounts[0];
+            setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
+            console.log("Selected Account is " + selectedAccount);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+        provider.on("chainChanged", function () {
+          window.location.reload();
         });
 
-      provider.on("chainChanged", function () {
-        window.location.reload();
-      });
+        provider.on("accountsChanged", function (accounts) {
+          if (accounts.length > 0) {
+            selectedAccount = accounts[0];
+            console.log("Selected Account change is" + selectedAccount);
+          } else {
+             window.location.reload();
+            console.error("No account is found");
+          }
+        });
 
-      provider.on("accountsChanged", function (accounts) {
-        if (accounts.length > 0) {
-          selectedAccount = accounts[0];
-          console.log("Selected Account change is" + selectedAccount);
-        } else {
-           window.location.reload();
-          console.error("No account is found");
-        }
-      });
+        provider.on("message", function (message) {
+          console.log(message);
+        });
 
-      provider.on("message", function (message) {
-        console.log(message);
-      });
+        provider.on("connect", function (info) {
+          console.log("Connected to network " + info);
+        });
 
-      provider.on("connect", function (info) {
-        console.log("Connected to network " + info);
-      });
-
-      provider.on("disconnect", function (error) {
-        console.log("Disconnected from network " + error);
-      });
-    } else {
-      alert("Please install metamask");
+        provider.on("disconnect", function (error) {
+          console.log("Disconnected from network " + error);
+          window.location.reload();
+        });
+      } else {
+        alert("Please install metamask");
+      }
     }
+    else {
+      alert("Please change your chain account to Oasis");
+    }
+    // console.log(chainId);
+    
   }
 
   async function onPublicMintClick() {
@@ -142,12 +163,12 @@ export default function Main() {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
-      const cost = 200000000000000000 * mintCount;
+      const cost = 100000000000000000 * textInput1;
       alert(cost);
       contract.methods
-        .safeMint(mintCount)
+        .safeMint(textInput1)
         .send({ from: accounts[0], value: cost });
-      setMintCount(1);
+      setTextInput1(1);
     }
   }
   async function onWhitelistMintClick() {
@@ -158,12 +179,12 @@ export default function Main() {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
-      const cost = 100000000000000000 * mintCount;
+      const cost = 100000000000000000 * textInput1;
       alert(cost);
       contract.methods
-        .mintForWhiteListed(mintCount)
+        .mintForWhiteListed(textInput1)
         .send({ from: accounts[0], value: cost });
-      setMintCount(1);
+      setTextInput1(1);
     }
   }
   return (
@@ -198,7 +219,7 @@ export default function Main() {
           <div className="mintCount">
             <span 
               className="minus" 
-              onClick = {() => setMintValue(mintCount + 1)}
+              onClick = {() => setMintValue(textInput1 + 1)}
             >
               +
             </span>
@@ -207,14 +228,14 @@ export default function Main() {
                 className="mintValue" 
                 ref={inputMint} 
                 type="text" 
-                value={mintCount}
+                value={textInput1}
                 maxLength="2"
                 onChange={(e) => setMintValue(e.target.value, true)}
               />
             </div>
             <span 
               className="plus"
-              onClick = {() => setMintValue(mintCount - 1)}
+              onClick = {() => setMintValue(textInput1 - 1)}
             >
               -
             </span>
@@ -235,10 +256,10 @@ export default function Main() {
         </div>
         <div>
           <div className="sun"></div>
-          <img class = "cactus" src = "https://www.freeiconspng.com/uploads/cactus-transparent-clipart-png-18.png" />
-          <div class = "sand first"><div class = "sand-inner"></div></div>
-          <div class = "sand"><div class = "sand-inner"></div></div>
-          <img class="bush" src="https://lh5.ggpht.com/SmI3FDZzhzV2uj9Of1MlbcdW5phOie9bzQ5TZ-YxfstqVwoeoxOku67F2n4kvdsX9U_y9Nb8D4JLcW1QJI_9EpM=s400" />
+          <img className = "cactus" src = "https://www.freeiconspng.com/uploads/cactus-transparent-clipart-png-18.png" />
+          <div className = "sand first"><div className = "sand-inner"></div></div>
+          <div className = "sand"><div className = "sand-inner"></div></div>
+          <img className="bush" src="https://lh5.ggpht.com/SmI3FDZzhzV2uj9Of1MlbcdW5phOie9bzQ5TZ-YxfstqVwoeoxOku67F2n4kvdsX9U_y9Nb8D4JLcW1QJI_9EpM=s400" />
         </div>
       </div>      
     </div>
