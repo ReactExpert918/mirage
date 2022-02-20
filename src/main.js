@@ -66,7 +66,7 @@ export default function Main() {
   }, []);
 
   const changeValue = (newValue) => {
-    let value = newValue !== 21 ? newValue : 20;
+    let value = newValue != 21 ? newValue : 20;
     setTextInput1(value);
   }
 
@@ -107,7 +107,6 @@ export default function Main() {
   async function onConnectClick() {
     let provider = window.ethereum;
     const chainId = await provider.request({ method: 'eth_chainId' });
-    console.log(chainId);
     if(chainId == 0xa516) {
       if (typeof provider !== "undefined") {
         provider
@@ -154,13 +153,15 @@ export default function Main() {
     else {
       alert("Please change your chain account to Oasis");
     }
+    // console.log(chainId);
+    
   }
 
   async function onPublicMintClick() {
     let provider = window.ethereum;
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
-    if (accounts[0] === null) {
+    if (accounts[0] == null) {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
@@ -176,7 +177,7 @@ export default function Main() {
     let provider = window.ethereum;
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
-    if (accounts[0] === null) {
+    if (accounts[0] == null) {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
@@ -192,14 +193,14 @@ export default function Main() {
     <div className="container">
       <div className="header">
         <div className="socialLink">
-          <a href="http://t.me/miragemkt" target="_blank" rel="noreferrer">
-            <img className="socialIcon" src={telegram} alt="Telegram" />
+          <a href="http://t.me/miragemkt" target="_blank">
+            <img className="socialIcon" src={telegram} />
           </a>
-          <a href="https://discord.gg/bUBycbtuCh" target="_blank" rel="noreferrer">
-            <img className="discord" src={discord } alt="Discord" />
+          <a href="https://discord.gg/bUBycbtuCh" target="_blank">
+            <img className="discord" src={discord } />
           </a>
-          <a href="https://twitter.com/MirageMarket" target="_blank" rel="noreferrer">
-            <img className="socialIcon" src={twitter} alt="Twitter" />
+          <a href="https://twitter.com/MirageMarket" target="_blank">
+            <img className="socialIcon" src={twitter} />
           </a>
         </div>
         <div className="logo">
@@ -215,7 +216,7 @@ export default function Main() {
         <div className="boxModal">
           <div className="boxModalTitle">
             <p className="cactusClaim">CLAIM YOUR</p>
-            <img src={cac} className="cactusTitle" alt="CactusTitle" />
+            <img src={cac} className="cactusTitle" />
           </div>
           <div className="mintCount">
             <span 
@@ -253,14 +254,14 @@ export default function Main() {
             <button className="wlButton" onClick={onWhitelistMintClick}>WHITELIST MINT</button>
             <button className="plButton" onClick={onPublicMintClick}>PUBLIC MINT</button>
           </div>
-          <img className="desert" src={desert} alt="Desert" />
+          <img className="desert" src={desert} />
         </div>
         <div>
           <div className="sun"></div>
-          <img className = "cactus" alt="Cactua" src = "https://www.freeiconspng.com/uploads/cactus-transparent-clipart-png-18.png" />
+          <img className = "cactus" src = "https://www.freeiconspng.com/uploads/cactus-transparent-clipart-png-18.png" />
           <div className = "sand first"><div className = "sand-inner"></div></div>
           <div className = "sand"><div className = "sand-inner"></div></div>
-          <img className="bush" alt="Bush" src="https://lh5.ggpht.com/SmI3FDZzhzV2uj9Of1MlbcdW5phOie9bzQ5TZ-YxfstqVwoeoxOku67F2n4kvdsX9U_y9Nb8D4JLcW1QJI_9EpM=s400" />
+          <img className="bush" src="https://lh5.ggpht.com/SmI3FDZzhzV2uj9Of1MlbcdW5phOie9bzQ5TZ-YxfstqVwoeoxOku67F2n4kvdsX9U_y9Nb8D4JLcW1QJI_9EpM=s400" />
         </div>
       </div>      
     </div>
