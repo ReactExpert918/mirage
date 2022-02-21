@@ -172,7 +172,7 @@ export default function Main() {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
-      const cost = 100000000000000000 * textInput1;
+      const cost = 1000000000000000000 * textInput1;
       alert(cost);
       contract.methods
         .safeMint(textInput1)
@@ -188,7 +188,7 @@ export default function Main() {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
-      const cost = 100000000000000000 * textInput1;
+      const cost = 1000000000000000000 * textInput1;
       alert(cost);
       contract.methods
         .mintForWhiteListed(textInput1)
