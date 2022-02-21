@@ -168,7 +168,7 @@ export default function Main() {
     let provider = window.ethereum;
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
-    if (accounts[0] === null) {
+    if (accounts[0] === undefined) {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
@@ -184,7 +184,7 @@ export default function Main() {
     let provider = window.ethereum;
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
-    if (accounts[0] === null) {
+    if (accounts[0] === undefined) {
       alert("Plese connect  metamask");
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
