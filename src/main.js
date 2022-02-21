@@ -160,7 +160,6 @@ export default function Main() {
     else {
       NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
     }
-    // console.log(chainId);
     
   }
 
@@ -170,12 +169,13 @@ export default function Main() {
     let accounts = await web3.eth.getAccounts();
     if (accounts[0] === undefined) {
       alert("Plese connect  metamask");
+        NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
       const cost = 1000000000000000000 * textInput1;
       alert(cost);
       contract.methods
-        .safeMint(textInput1)
+        .mintForPublic(textInput1)
         .send({ from: accounts[0], value: cost });
       setTextInput1(1);
     }
@@ -186,6 +186,7 @@ export default function Main() {
     let accounts = await web3.eth.getAccounts();
     if (accounts[0] === undefined) {
       alert("Plese connect  metamask");
+        NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
       const cost = 1000000000000000000 * textInput1;

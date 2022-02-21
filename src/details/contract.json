@@ -55,7 +55,7 @@
     "type": "function",
     "stateMutability": "payable",
     "outputs": [],
-    "name": "safeMint",
+    "name": "mintForPublic",
     "inputs": [
       { "type": "uint256", "name": "numberToMint", "internalType": "uint256" }
     ]
