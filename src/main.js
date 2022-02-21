@@ -57,6 +57,16 @@ export default function Main() {
       provider.on("chainChanged", function () {
         window.location.reload();
       });
+      provider.on("accountsChanged", function (accounts) {
+        if (accounts.length > 0) {
+          selectedAccount = accounts[0];
+          setSelected(selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-4));
+          console.log("Selected Account change is" + selectedAccount);
+        } else {
+          window.location.reload();
+          console.error("No account is found");
+        }
+      });
       let accounts = await web3.eth.getAccounts();
       if (accounts.length > 0) {
         selectedAccount = accounts[0];
@@ -95,12 +105,12 @@ export default function Main() {
       val = 1
     }
     if (!field) {      
-      inputMint.current.style.transform = val > mintCount ? 'translateY(-100%)' : 'translateY(100%)'
+      inputMint.current.style.transform = val > textInput1 ? 'translateY(-100%)' : 'translateY(100%)'
       inputMint.current.style.opacity = 0
        
       setTimeout(() => {
         inputMint.current.style.transitionDuration = '0s'
-        inputMint.current.style.transform = val > mintCount ? 'translateY(100%)' : 'translateY(-100%)'
+        inputMint.current.style.transform = val > textInput1 ? 'translateY(100%)' : 'translateY(-100%)'
         inputMint.current.style.opacity = 0
         changeValue(val);
         
@@ -138,7 +148,7 @@ export default function Main() {
           selectedAccount = accounts[0];
           console.log("Selected Account change is" + selectedAccount);
         } else {
-           window.location.reload();
+          window.location.reload();
           console.error("No account is found");
         }
       });
@@ -158,7 +168,7 @@ export default function Main() {
       
     }
     else {
-      NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
+      NotificationManager.error('Plese connect  metamask', "", 3000);
     }
     
   }
@@ -168,12 +178,10 @@ export default function Main() {
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
     if (accounts[0] === undefined) {
-      alert("Plese connect  metamask");
-        NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
+        NotificationManager.error('Plese connect  metamask', "",  3000);
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
       const cost = 1000000000000000000 * textInput1;
-      alert(cost);
       contract.methods
         .mintForPublic(textInput1)
         .send({ from: accounts[0], value: cost });
@@ -185,12 +193,10 @@ export default function Main() {
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
     if (accounts[0] === undefined) {
-      alert("Plese connect  metamask");
-        NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
+      NotificationManager.error('Plese connect  metamask', "", 3000);
     } else {
       contract = new web3.eth.Contract(abi, ADDRESS);
       const cost = 1000000000000000000 * textInput1;
-      alert(cost);
       contract.methods
         .mintForWhiteListed(textInput1)
         .send({ from: accounts[0], value: cost });
@@ -204,7 +210,7 @@ export default function Main() {
           <a href="http://t.me/miragemkt" target="_blank" rel="noreferrer">
             <img alt="img"  className="socialIcon" src={telegram} />
           </a>
-          <a href="https://discord.gg/bUBycbtuCh" target="_blank" rel="noreferrer">
+          <a href="https://discord.gg/2V5fsANtfv" target="_blank" rel="noreferrer">
             <img alt="img" className="discord" src={discord } />
           </a>
           <a href="https://twitter.com/MirageMarket" target="_blank" rel="noreferrer">
@@ -228,10 +234,10 @@ export default function Main() {
           </div>
           <div className="mintCount">
             <span 
-              className="minus" 
-              onClick = {() => setMintValue(textInput1 + 1)}
+              className="plus" 
+              onClick = {() => setMintValue(textInput1 - 1)}
             >
-              +
+              -
             </span>
             <div className="input-wrapper">
               <input 
@@ -244,10 +250,10 @@ export default function Main() {
               />
             </div>
             <span 
-              className="plus"
-              onClick = {() => setMintValue(textInput1 - 1)}
+              className="minus"
+              onClick = {() => setMintValue(textInput1 + 1)}
             >
-              -
+              +
             </span>
           </div>
           <div className="mintTotalCount">

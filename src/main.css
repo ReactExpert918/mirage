@@ -447,3 +447,15 @@ variables above and don't change anything in the actual loader code
     border-radius: 50%;
     animation: circle-loader var(--animation-duration, 1s) infinite ease-out;
 }
+
+.notification-container .notification:nth-child(1) {
+  margin-top: 90px !important;
+}
+
+.notification .message {
+  font-size: 20px !important;
+}
+
+.notification-container {
+  margin-right: 50px;
+}
