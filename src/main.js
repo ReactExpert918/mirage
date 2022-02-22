@@ -12,7 +12,7 @@ import contractjson from "./details/contract.json";
 
 let contract = null;
 let selectedAccount = null;
-const ADDRESS = "0xAb444C2cB2Ca6635f317b37440A7C0DA056B6971";
+const ADDRESS = "0x0167Bf32d812fFf47A0Ede68A9c4864F90eE4cAc";
 
 const loadedData = JSON.stringify(contractjson);
 const abi = JSON.parse(loadedData);
@@ -23,7 +23,7 @@ export default function Main() {
   const [textInput1, setTextInput1] = useState(1);
   const [selected, setSelected] = useState(null);
   const [network, setNetwork] = useState(true);
-  const totalCount = 7800;
+  const totalCount = 5;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -178,14 +178,20 @@ export default function Main() {
     const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
     if (accounts[0] === undefined) {
-        NotificationManager.error('Plese connect  metamask', "",  3000);
-    } else {
-      contract = new web3.eth.Contract(abi, ADDRESS);
-      const cost = 1000000000000000000 * textInput1;
-      contract.methods
-        .mintForPublic(textInput1)
-        .send({ from: accounts[0], value: cost });
-      setTextInput1(1);
+      NotificationManager.error('Plese connect  metamask', "",  3000);
+    }
+    else {
+      if(totalCount - mintCount < textInput1) {
+        NotificationManager.error('Not Enough Remained', "",  3000);
+      } else {
+        contract = new web3.eth.Contract(abi, ADDRESS);
+        const cost = 1000000000000000000 * textInput1;
+        contract.methods
+          .mintForPublic(textInput1)
+          .send({ from: accounts[0], value: cost });
+        setTextInput1(1);
+        NotificationManager.success('Will Receive NFT Soon', "", 3000);
+      }
     }
   }
   async function onWhitelistMintClick() {
@@ -195,12 +201,17 @@ export default function Main() {
     if (accounts[0] === undefined) {
       NotificationManager.error('Plese connect  metamask', "", 3000);
     } else {
-      contract = new web3.eth.Contract(abi, ADDRESS);
-      const cost = 1000000000000000000 * textInput1;
-      contract.methods
-        .mintForWhiteListed(textInput1)
-        .send({ from: accounts[0], value: cost });
-      setTextInput1(1);
+      if(totalCount - mintCount < textInput1) {
+        NotificationManager.error('Not Enough Remained', "",  3000);
+      } else {
+        contract = new web3.eth.Contract(abi, ADDRESS);
+        const cost = 1000000000000000000 * textInput1;
+        contract.methods
+          .mintForWhiteListed(textInput1)
+          .send({ from: accounts[0], value: cost });
+        setTextInput1(1);
+        NotificationManager.success('Will Receive NFT Soon', "", 3000);
+      }
     }
   }
   return (
