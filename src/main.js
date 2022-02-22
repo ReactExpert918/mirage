@@ -23,7 +23,7 @@ export default function Main() {
   const [textInput1, setTextInput1] = useState(1);
   const [selected, setSelected] = useState(null);
   const [network, setNetwork] = useState(true);
-  const totalCount = 5;
+  const totalCount = 7800;
 
   useEffect(() => {
     const interval = setInterval(() => {
